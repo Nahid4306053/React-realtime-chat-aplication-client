@@ -1,0 +1,26 @@
+
+.nav_item a.active {
+  color: #5f27cd ; 
+}  
+
+
+.custom_scrollbar::-webkit-scrollbar {
+	width: 4px;
+	height:4px;
+	
+}
+.custom_scrollbar::-webkit-scrollbar-track {
+	background-color:#1E293B;
+	-webkit-border-radius: 1px;
+	
+}
+.custom_scrollbar::-webkit-scrollbar-thumb:vertical {
+	background-color: #334155;
+	-webkit-border-radius: 0px;
+	border-radious:100%;
+    -webkit-width:5;
+}
+.custom_scrollbar::-webkit-scrollbar-thumb:vertical:hover {
+	cursor: pointer;
+	background-color:#334155; 
+}

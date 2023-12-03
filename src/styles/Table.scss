@@ -1,0 +1,9 @@
+.table :where(.table-pin-rows thead tr) {
+                    position: sticky;
+                    top: 0px;
+                    font-size: 20px;
+                    z-index: 1;
+                    height: 80px;
+                    --tw-bg-opacity: 1;
+                    background-color: #334155;
+}
