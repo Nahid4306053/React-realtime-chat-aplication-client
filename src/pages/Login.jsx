@@ -21,7 +21,7 @@ export default function Login() {
     },
     withCredentials:true
    }).then((res)=>{
-console.log(res.data);
+
     if(res.data.success){
       console.log(res.data.success);
       getCurrentuser();
