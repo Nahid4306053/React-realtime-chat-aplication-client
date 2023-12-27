@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import teacherm5 from "/teacher-m-5.png"
 import axios from 'axios';
 import { isEmpty, map } from 'lodash';
 import moment from 'moment/moment';
 import { Link, useLocation } from 'react-router-dom';
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 import SingelBuddy from './SingelBuddy';
 import { useConvertion } from '../../../Context/ConvertionContext';
 export default function Buddy() {

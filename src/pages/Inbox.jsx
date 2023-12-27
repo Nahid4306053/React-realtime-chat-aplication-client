@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { isEmpty, uniqBy } from "lodash";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
+import Pusher from "pusher-js";
 import { useAuth } from "../Context/Authntication";
 import ChatEnd from "../components/Content/Inbox/ChatEnd";
 import ChatStart from "../components/Content/Inbox/ChatStart";
@@ -13,9 +15,13 @@ export default function Inbox() {
   const { id } = useParams();
   const [messages, setMessages] = useState([]);
   const { state } = useLocation();
-  const {convertionID} = state;
+  const { convertionID } = state;
+  const pusher = new Pusher("a000b8eeb634d3351df4", {
+    cluster: "ap2",
+  });
+
   useEffect(() => {
-    if (id) {
+  if (id) {
       axios
         .get(`${import.meta.env.VITE_API_URL}/inbox/message/${id}`, {
           withCredentials: true,
@@ -37,25 +43,20 @@ export default function Inbox() {
   }, [messages, id]);
 
   useEffect(() => {
-    const socket = io(`${import.meta.env.VITE_API_URL}`, {
-      withCredentials: true,
-      extraHeaders: {
-        "my-custom-header": "abcd",
-      },
-    });
-
-    socket.on("new_message", (newmessage) => {  
+    var channel = pusher.subscribe("chitChat");
+    channel.bind("new-message", function (newmessage) {
       if (convertionID === newmessage.ConvertionID) {
-        setMessages((old) => uniqBy([...old, newmessage.message],"_id")); 
+        setMessages((old) => uniqBy([...old, newmessage.message], "_id"));
       }
     });
-    return ()=> socket.close()
   }, [convertionID]);
 
   return (
     <>
       <div className="header h-20 sticky top-0 bg-slate-700 flex justify-between items-center px-8">
-        {state && <h1 className="text-xl md:text-3xl">{state.participate.name}</h1>}
+        {state && (
+          <h1 className="text-xl md:text-3xl">{state.participate.name}</h1>
+        )}
         <h1 className="text-xl md:text-3xl hover:scale-110 transition-all cursor-pointer">
           <i className="fa-solid fa-trash-can"></i>
         </h1>
@@ -69,9 +70,8 @@ export default function Inbox() {
             if (ele.sender._id === user._id) {
               // <ChatEnd/>
               return (
-                
-                <ChatEnd 
-                 key={ind}
+                <ChatEnd
+                  key={ind}
                   message={{
                     newmessage: ele.message,
                     senddate: ele.last_update,
@@ -81,8 +81,8 @@ export default function Inbox() {
               );
             } else {
               return (
-                <ChatStart  
-                key={ind}
+                <ChatStart
+                  key={ind}
                   message={{
                     sender: ele.sender,
                     senddate: ele.last_update,

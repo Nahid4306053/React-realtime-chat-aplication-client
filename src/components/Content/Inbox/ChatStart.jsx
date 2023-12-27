@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import moment from "moment";
 import React from "react";
 
@@ -14,13 +16,9 @@ export default function ChatStart({ message }) {
       </div>
       <div className="chat-header  mb-2">
         {sender.name}
-        <time className="text-xs opacity-50 ">
-          {" "}
-          {senddate &&
-            moment.utc(senddate, "YYYYMMDDHHmmss").fromNow()}
-        </time>
-      </div>
-      <div className="chat-bubble chat-bubble-secondary">
+
+      </div>      
+      <div className="chat-bubble min-w-[80px] flex justify-end chat-bubble-secondary">
         {newmessage}
         {attachments.length > 0 && (
           <div className="attachments mt-4 max-w-sm">
@@ -37,7 +35,14 @@ export default function ChatStart({ message }) {
           </div>
         )}
       </div>
-      
+       <div className="chat-footer   mt-2">
+       <time className="text-xs opacity-50 ">
+          {" "}
+          {senddate &&
+            moment.utc(senddate, "YYYYMMDDHHmmss").fromNow()}
+        </time>
+
+      </div>
     </div>
   );
 }

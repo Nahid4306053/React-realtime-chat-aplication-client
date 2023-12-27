@@ -1,5 +1,7 @@
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable react/prop-types */
 import axios from "axios";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import  { createContext, useContext, useEffect, useState } from "react";
 const AuthProvidor = createContext();
 
 export const useAuth = () => {
@@ -29,7 +31,6 @@ export default function Authntication({ children }) {
         setloading(false);
       }
     } catch (err) {
-      console.log(err);
       setloading(false);
       setUser();
     }

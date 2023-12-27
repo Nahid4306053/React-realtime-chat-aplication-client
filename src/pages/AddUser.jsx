@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import InputBox from '../components/InputBox'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
