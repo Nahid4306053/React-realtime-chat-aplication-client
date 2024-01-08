@@ -1,7 +1,10 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import axios from 'axios'
 import { isEmpty } from 'lodash'
 import React, { createContext, useContext, useState } from 'react'
 const conversionContext = createContext()
+// eslint-disable-next-line react-refresh/only-export-components
 export const useConvertion = () =>{
        return useContext(conversionContext)
 }

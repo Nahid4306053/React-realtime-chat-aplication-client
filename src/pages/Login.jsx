@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Login_png from '/Login_png.png'
 import user_login from '/user_login.jpg'
 import InputBox from "../components/InputBox";
@@ -23,7 +23,7 @@ export default function Login() {
    }).then((res)=>{
 
     if(res.data.success){
-      console.log(res.data.success);
+      
       getCurrentuser();
       navigate('/');
     }

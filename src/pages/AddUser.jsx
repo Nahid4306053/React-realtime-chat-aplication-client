@@ -1,12 +1,14 @@
+/* eslint-disable no-undef */
 import  { useState } from 'react'
 import InputBox from '../components/InputBox'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import UploadIMG from '../Utils/UploadIMG'
 export default function AddUser() {
 const [previewImg,setPreviewImg] = useState() 
 const [errors,setErrors] = useState([])
 const navigate = useNavigate()
-const handelAddUser = (form) =>{
+const handelAddUser = async (form) =>{
     form.preventDefault()
    const password = form.target.password.value;
    const confirmepassword = form.target.confirmepassword.value;
@@ -24,6 +26,10 @@ const handelAddUser = (form) =>{
    setErrors(Error);
    const formdata = new FormData(form.target) 
    if(Error.length === 0){
+    const uploadIMG = await UploadIMG(avatar[0]);
+    if (uploadIMG.data.data.display_url) {
+       formdata.set("avatar",uploadIMG.data.data.display_url)
+    
       axios.post(`${import.meta.env.VITE_API_URL}/users/set`,formdata,{
         headers:{
           "Content-Type":"multipart/form-data"
@@ -46,6 +52,7 @@ const handelAddUser = (form) =>{
         console.log(err);
       }) 
    }
+ }
 }
 
   return (

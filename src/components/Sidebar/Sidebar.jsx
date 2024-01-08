@@ -1,4 +1,4 @@
-import React from 'react'
+
 import Useravatar from './Useravatar'
 import Buddy from './Buddys/Buddy'
 import "../../App.css"

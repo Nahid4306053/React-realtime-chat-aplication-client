@@ -1,12 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
+import { useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 import Pusher from "pusher-js";
 import { useEffect, useState } from "react";
+import { useConvertion } from "../../../Context/ConvertionContext";
 // import { io } from "socket.io-client";
 
 export default function SingelBuddy({ ele, convertionID }) {
   const [data, setdata] = useState(ele);
+  const QueryClient = useQueryClient();
+  const {getConvertion} = useConvertion();
   const pusher = new Pusher("a000b8eeb634d3351df4", {
     cluster: "ap2",
   });
@@ -15,13 +19,15 @@ export default function SingelBuddy({ ele, convertionID }) {
     channel.bind("new-message", function (newmessage) {
 
       if (convertionID === newmessage.ConvertionID) {
+        getConvertion();
+        QueryClient.invalidateQueries(['messages']);
         setTimeout(() => {
           setdata((old) => ({
             ...old,
             lastmeassage: newmessage.message.message,
             lastmeassagedate: newmessage.message.updatedAt,
           }));
-        }, 500);
+        }, 100);
       }
     });
   }, []);

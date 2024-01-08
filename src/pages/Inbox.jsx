@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { isEmpty, uniqBy } from "lodash";
@@ -9,34 +10,45 @@ import { useAuth } from "../Context/Authntication";
 import ChatEnd from "../components/Content/Inbox/ChatEnd";
 import ChatStart from "../components/Content/Inbox/ChatStart";
 import MessageSendBox from "../components/Content/MessageSendBox";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useConvertion } from "../Context/ConvertionContext";
 
 export default function Inbox() {
   const { user } = useAuth();
   const { id } = useParams();
-  const [messages, setMessages] = useState([]);
+  const {getConvertion,Convertions} = useConvertion();
+  const QueryClient = useQueryClient();
   const { state } = useLocation();
   const { convertionID } = state;
   const pusher = new Pusher("a000b8eeb634d3351df4", {
     cluster: "ap2",
   });
 
-  useEffect(() => {
-  if (id) {
-      axios
-        .get(`${import.meta.env.VITE_API_URL}/inbox/message/${id}`, {
-          withCredentials: true,
-        })
-        .then((res) => {
-          if (!isEmpty(res.data.data)) {
-            setMessages(res.data.data);
-          } else {
-            setMessages([]);
-          }
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [id]);
+  // useEffect(() => {
+  // if (id) {
+  //     axios
+  //       .get(`${import.meta.env.VITE_API_URL}/inbox/message/${id}`, {
+  //         withCredentials: true,
+  //       })
+  //       .then((res) => {
+  //         if (!isEmpty(res.data.data)) {
+  //           setMessages(res.data.data);
+  //         } else {
+  //           setMessages([]);
+  //         }
+  //       })
+  //       .catch((err) => console.log(err));
+  //   }
+  // }, [id]);
 
+  const {data:messages,isLoading , isError  , error} = useQuery({
+    queryKey : ['messages', id],
+    queryFn : async ()=>{
+      const res = axios.get(`${import.meta.env.VITE_API_URL}/inbox/message/${id}`, { withCredentials: true, })
+      return res
+    }
+  }) 
+ 
   useEffect(() => {
     const inbox = document.getElementById("inbox");
     inbox.scrollTo(0, inbox.scrollHeight - inbox.offsetHeight);
@@ -46,7 +58,8 @@ export default function Inbox() {
     var channel = pusher.subscribe("chitChat");
     channel.bind("new-message", function (newmessage) {
       if (convertionID === newmessage.ConvertionID) {
-        setMessages((old) => uniqBy([...old, newmessage.message], "_id"));
+        QueryClient.invalidateQueries(['messages']);
+        getConvertion()
       }
     });
   }, [convertionID]);
@@ -65,8 +78,12 @@ export default function Inbox() {
         id="inbox"
         className="inbox custom_scrollbar overflow-auto  p-4 h-[70%] md:h-[80%]"
       >
-        {messages.length > 0 &&
-          messages.map((ele, ind) => {
+        {
+        isLoading ? <p>loading...</p> :
+        isError ? <p>Errro Occured</p> :
+        
+        messages.data?.data.length > 0 &&
+          messages.data?.data.map((ele, ind) => {
             if (ele.sender._id === user._id) {
               // <ChatEnd/>
               return (
